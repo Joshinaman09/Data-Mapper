@@ -1,5 +1,0 @@
-pyreadstat
-pandas
-numpy
-streamlit
-openpyxl
