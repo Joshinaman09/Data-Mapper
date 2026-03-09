@@ -138,11 +138,11 @@ JSON format:
 # ===============================
 if st.button("🧠 Generate Mapping via LLM"):
     with st.spinner("Calling LLM..."):
-        resp = client.response.create(
+        resp = client.responses.create(
             model=MODEL_NAME,
             temperature=0,
-            messages=[{"role": "user", "content": prompt}]
         )
+        answer = resp.output[0].content[0].text
     st.session_state["mappings"] = json.loads(
         resp.choices[0].message.content
     )["mappings"]
@@ -288,6 +288,7 @@ if not supp_df.empty:
         file_name=f"SUPP{domain}.csv",
         mime="text/csv"
     )
+
 
 
 
