@@ -85,43 +85,52 @@ for col in df_raw.columns:
 st.subheader("📄 Raw Metadata (Label + Sample Value)")
 st.dataframe(pd.DataFrame(raw_metadata), use_container_width=True)
 
-# ===============================
-# LLM PROMPT (LABEL + FIRST ROW)
-# ===============================
 prompt = f"""
-You are an SDTM mapping expert.
+You are an expert in CDISC SDTM mapping used in clinical trials.
 
-Target SDTM domain: {domain}
+Your task is to map raw dataset variables to the correct SDTM variables.
 
-Raw variables with label and a sample value
-(from the first non-empty data row):
+Target SDTM Domain:
+{domain}
+
+Raw dataset variables (with labels and sample values from the first non-empty row):
 
 {json.dumps(raw_metadata, indent=2)}
 
-Allowed SDTM variables:
+Allowed SDTM Variables for this domain:
 {allowed_sdtm_vars}
 
-Return JSON ONLY:
+Instructions:
+
+1. Map each raw variable to the most appropriate SDTM variable.
+2. Use ONLY the provided SDTM variables.
+3. Use the sample_value to determine the variable meaning when possible.
+4. If label and sample_value conflict, prioritize the sample_value.
+5. If no SDTM variable is appropriate, return null.
+6. Infer variable type as:
+   - "Character"
+   - "Numeric"
+
+Return STRICT JSON only in the following format.
+
+Do not include explanations.
+Do not include markdown.
+Do not include extra text.
+
+JSON format:
 
 {{
   "domain": "{domain}",
   "mappings": [
     {{
-      "raw": "<raw>",
-      "raw_label": "<label>",
-      "sample_value": "<sample or null>",
-      "sdtm": "<SDTM variable or null>",
+      "raw": "<raw variable name>",
+      "raw_label": "<raw label>",
+      "sample_value": "<sample value or null>",
+      "sdtm": "<mapped SDTM variable or null>",
       "type": "<Character or Numeric>"
     }}
   ]
 }}
-
-Rules:
-- Use ONLY allowed SDTM variables
-- Use sample_value to infer dates, flags, grades, identifiers
-- If label and sample_value conflict, trust sample_value
-- Use null if unsure
-- No markdown
 """
 
 # ===============================
@@ -279,5 +288,6 @@ if not supp_df.empty:
         file_name=f"SUPP{domain}.csv",
         mime="text/csv"
     )
+
 
 
