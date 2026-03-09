@@ -142,7 +142,7 @@ if st.button("🧠 Generate Mapping via LLM"):
             model=MODEL_NAME,
             temperature=0,
         )
-        answer = resp.output[0].content[0].text
+        answer = resp.output_text
         st.write(answer)
     st.session_state["mappings"] = json.loads(
         resp.choices[0].message.content
@@ -289,6 +289,7 @@ if not supp_df.empty:
         file_name=f"SUPP{domain}.csv",
         mime="text/csv"
     )
+
 
 
 
