@@ -5,3 +5,4 @@ pyreadstat
 openpyxl
 xlsxwriter
 altair==4.2.2
+openai
